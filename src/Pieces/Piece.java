@@ -24,4 +24,13 @@ public class Piece {
 //    Class<?> getType(){
 //        return this.getType();
 //    }
+    @Override
+    public String toString() {
+        String result = "";
+        if(xPos % 2 == 1 && yPos % 2 == 0 || xPos % 2 == 0 && yPos % 2 == 1 ){
+            return "##";
+        }else{
+            return "  ";
+        }
+    }
 }

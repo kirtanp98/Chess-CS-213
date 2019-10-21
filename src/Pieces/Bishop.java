@@ -27,4 +27,13 @@ public class Bishop extends Piece {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        if(color == 0){
+            return "wB";
+        }else {
+            return "bB";
+        }
+    }
 }

@@ -42,4 +42,13 @@ public class Queen extends Piece {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        if(color == 0){
+            return "wQ";
+        }else {
+            return "bQ";
+        }
+    }
 }

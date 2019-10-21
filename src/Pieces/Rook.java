@@ -23,4 +23,13 @@ public class Rook extends Piece {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        if(color == 0){
+            return "wR";
+        }else {
+            return "bR";
+        }
+    }
 }

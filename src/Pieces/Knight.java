@@ -39,4 +39,13 @@ public class Knight extends Piece {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        if(color == 0){
+            return "wK";
+        }else {
+            return "bK";
+        }
+    }
 }

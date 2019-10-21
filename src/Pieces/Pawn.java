@@ -32,4 +32,13 @@ public class Pawn extends Piece {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        if(color == 0){
+            return "wp";
+        }else {
+            return "bp";
+        }
+    }
 }

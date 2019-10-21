@@ -17,4 +17,13 @@ public class King extends Piece {
 
         return true;
     }
+
+    @Override
+    public String toString() {
+        if(color == 0){
+            return "wK";
+        }else {
+            return "bK";
+        }
+    }
 }
