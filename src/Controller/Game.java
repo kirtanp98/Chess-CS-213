@@ -6,6 +6,7 @@ import Pieces.*;
 public class Game {
     public Piece[][] game = new Piece[8][8];// [x][y] x goes to the right and y goes down
     public int moveNumber = 0;
+    public boolean gameFinished = false;
 
     public Game(){
 
@@ -57,6 +58,21 @@ public class Game {
 
     }
 
+    public void moveStringConverter(String move){ //promotion is not taken in to consideration yet
+        String moves[] = move.split(" ");
+
+        int startX = letterToInt(moves[0].charAt(0));
+        int startY = Character.getNumericValue(moves[0].charAt(1));
+        int endX =  letterToInt(moves[1].charAt(0));
+        int endY = Character.getNumericValue(moves[1].charAt(1));
+
+        Pair startPos = new Pair(startX, startY);
+        Pair endPos = new Pair(endX, endY);
+
+        move(startPos, endPos);
+        //return position;
+    }
+
     public void move(Pair startPos, Pair endPos){
         //Create a new test Board to check for invalid moves so that you don't mess with the real board while checking
         Piece[][] testGame = dupeBoard(game);
@@ -79,15 +95,19 @@ public class Game {
                     if(isCheckmate()){
                         if(moveNumber % 2 == 0){
                             System.out.println("White Wins");
+                            gameFinished = true;
                         } else {
                             System.out.println("Black Wins");
+                            gameFinished = true;
                         }
                     }
                     System.out.println("Move Successful");
+                    moveNumber++;
                     System.out.println("Check");
                 } else {
                     game = testGame;
                     System.out.println("Move Successful");
+                    moveNumber++;
                 }
             } else {
                 System.out.println("Invalid move from " + startPos + " to " + endPos);
@@ -175,6 +195,42 @@ public class Game {
         }
         return false;
     }
+
+    public int letterToInt(char c){
+        int number = -1;
+
+        switch (c){
+            case 'a':
+                number = 0;
+                break;
+            case 'b':
+                number = 1;
+                break;
+            case 'c':
+                number = 2;
+                break;
+            case 'd':
+                number = 3;
+                break;
+            case 'e':
+                number = 4;
+                break;
+            case 'f':
+                number = 5;
+                break;
+            case 'g':
+                number = 6;
+                break;
+            case 'h':
+                number = 7;
+                break;
+            default:
+                break;
+        }
+
+        return number;
+    }
+
 
     public String toString(){
         String board = "";
