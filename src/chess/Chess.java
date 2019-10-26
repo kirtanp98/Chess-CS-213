@@ -13,13 +13,13 @@ public class Chess {
         Game newGame = new Game();
 
         Scanner scanner = new Scanner(System.in);
+        System.out.println(newGame);
 
         while(!newGame.gameFinished) {
             String input = scanner.nextLine();
             newGame.moveStringConverter(input);
         }
 
-        System.out.println(newGame);
     }
 
 }

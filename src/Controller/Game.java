@@ -62,9 +62,9 @@ public class Game {
         String moves[] = move.split(" ");
 
         int startX = letterToInt(moves[0].charAt(0));
-        int startY = Character.getNumericValue(moves[0].charAt(1));
+        int startY = Math.abs(8 -Character.getNumericValue(moves[0].charAt(1)));
         int endX =  letterToInt(moves[1].charAt(0));
-        int endY = Character.getNumericValue(moves[1].charAt(1));
+        int endY = Math.abs(8 -Character.getNumericValue(moves[1].charAt(1)));
 
         Pair startPos = new Pair(startX, startY);
         Pair endPos = new Pair(endX, endY);
