@@ -1,6 +1,5 @@
 package Pieces;
 
-import Controller.Game;
 import Data.Pair;
 
 public class Knight extends Piece {
@@ -10,42 +9,20 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean isValidPath(Pair position){
-
-        if(this.position.x-1 == position.x && this.position.y == position.y-3){
-            return true;
-        }
-        if(this.position.x-3 == position.x && this.position.y == position.y-1){
-            return true;
-        }
-
-        if(this.position.x-1 == position.x && this.position.y == position.y+3){
-            return true;
-        }
-        if(this.position.x-3 == position.x && this.position.y == position.y+1){
-            return true;
-        }
-
-        if(this.position.x+1 == position.x && this.position.y == position.y+3){
-            return true;
-        }
-        if(this.position.x+3 == position.x && this.position.y == position.y+1){
-            return true;
-        }
-
-        if(this.position.x+1 == position.x && this.position.y == position.y-3){
-            return true;
-        }
-        if(this.position.x-3 == position.x && this.position.y == position.y-1){
-            return true;
-        }
-
-        return false;
+    public boolean isValidPath(Pair position) {
+        return this.validMoves.contains(position);
     }
 
     @Override
-    public void setValidMoves(Game game) {
-
+    public void setValidMoves(Piece[][] testGame) {
+        checkEndSpace(testGame, new Pair(position.x - 1, position.y - 2));
+        checkEndSpace(testGame, new Pair(position.x - 1, position.y + 2));
+        checkEndSpace(testGame, new Pair(position.x + 1, position.y - 2));
+        checkEndSpace(testGame, new Pair(position.x + 1, position.y + 2));
+        checkEndSpace(testGame, new Pair(position.x - 2, position.y - 1));
+        checkEndSpace(testGame, new Pair(position.x - 2, position.y + 1));
+        checkEndSpace(testGame, new Pair(position.x + 2, position.y - 1));
+        checkEndSpace(testGame, new Pair(position.x + 2, position.y + 1));
     }
 
     @Override

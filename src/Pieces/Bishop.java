@@ -1,6 +1,5 @@
 package Pieces;
 
-import Controller.Game;
 import Data.Pair;
 
 public class Bishop extends Piece {

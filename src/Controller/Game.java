@@ -24,7 +24,7 @@ public class Game {
         game[7][0] = new Rook(new Pair(7, 0), 1);
 
         game[1][0] = new Knight(new Pair(1, 0), 1);
-        game[6][0] = new Knight(new Pair(1, 0), 1);
+        game[6][0] = new Knight(new Pair(6, 0), 1);
 
         game[2][0] = new Bishop(new Pair(2, 0), 1);
         game[5][0] = new Bishop(new Pair(5, 0), 1);
@@ -38,7 +38,7 @@ public class Game {
         game[7][7] = new Rook(new Pair(7, 7), 0);
 
         game[1][7] = new Knight(new Pair(1, 7), 0);
-        game[6][7] = new Knight(new Pair(1, 7), 0);
+        game[6][7] = new Knight(new Pair(6, 7), 0);
 
         game[2][7] = new Bishop(new Pair(2, 7), 0);
         game[5][7] = new Bishop(new Pair(5, 7), 0);

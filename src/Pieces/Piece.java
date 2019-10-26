@@ -23,6 +23,12 @@ public abstract class Piece {
         this.position = position;
     }
 
+    public void checkEndSpace(Piece[][] testGame, Pair newPos){
+        if((newPos.x >= 0 && newPos.y >= 0 && newPos.x <= 7 && newPos.y <= 7) && (testGame[newPos.x][newPos.y] == null || testGame[newPos.x][newPos.y].color != this.color)){
+            validMoves.add(newPos);
+        }
+    }
+
     //TODO Implement getType()
 //    Class<?> getType(){
 //        return this.getType();

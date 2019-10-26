@@ -1,6 +1,5 @@
 package Pieces;
 
-import Controller.Game;
 import Data.Pair;
 
 public class King extends Piece {
@@ -10,19 +9,21 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean isValidPath(Pair position){
-        if(position.x > this.position.x + 1 ||position.x < this.position.x - 1){
-            return false;
-        }
-        if(position.y > this.position.y + 1 || position.y < this.position.y - 1){
-            return false;
-        }
-
-        return true;
+    public boolean isValidPath(Pair position) {
+        return this.validMoves.contains(position);
     }
 
     @Override
-    public void setValidMoves(Game game) {
+    public void setValidMoves(Piece[][] testGame) {
+
+        checkEndSpace(testGame, new Pair(position.x - 1, position.y));
+        checkEndSpace(testGame, new Pair(position.x - 1, position.y - 1));
+        checkEndSpace(testGame, new Pair(position.x - 1, position.y + 1));
+        checkEndSpace(testGame, new Pair(position.x + 1, position.y + 1));
+        checkEndSpace(testGame, new Pair(position.x + 1, position.y));
+        checkEndSpace(testGame, new Pair(position.x + 1, position.y - 1));
+        checkEndSpace(testGame, new Pair(position.x, position.y + 1));
+        checkEndSpace(testGame, new Pair(position.x, position.y - 1));
 
     }
 
