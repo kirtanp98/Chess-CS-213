@@ -15,21 +15,21 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public void setValidMoves(Game currgame) {
+    public void setValidMoves(Piece[][] testGame) {
         int x = this.position.x;
         int y = this.position.y;
         while(x > 0 && y > 0){
             x--;
             y--;
             Pair newPos = new Pair(x, y);
-            if(currgame.game[x][y] == null){
+            if(testGame[x][y] == null){ // Moving to null space
                 validMoves.add(newPos);
-            } else if(this.color == 0 && currgame.game[x][y].color == 1 || this.color == 1 && currgame.game[x][y].color == 0){ //(White capture black or Black capture white)
+            } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
                 x = this.position.x;
                 y = this.position.y;
                 break;
-            } else {
+            } else { //Trying to capture your own piece
                 x = this.position.x;
                 y = this.position.y;
                 break;
@@ -39,9 +39,9 @@ public class Bishop extends Piece {
             x++;
             y++;
             Pair newPos = new Pair(x, y);
-            if(currgame.game[x][y] == null){
+            if(testGame[x][y] == null){
                 validMoves.add(newPos);
-            } else if(this.color == 0 && currgame.game[x][y].color == 1 || this.color == 1 && currgame.game[x][y].color == 0){ //(White capture black or Black capture white)
+            } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
                 x = this.position.x;
                 y = this.position.y;
@@ -56,9 +56,9 @@ public class Bishop extends Piece {
             x--;
             y++;
             Pair newPos = new Pair(x, y);
-            if(currgame.game[x][y] == null){
+            if(testGame[x][y] == null){
                 validMoves.add(newPos);
-            } else if(this.color == 0 && currgame.game[x][y].color == 1 || this.color == 1 && currgame.game[x][y].color == 0){ //(White capture black or Black capture white)
+            } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
                 x = this.position.x;
                 y = this.position.y;
@@ -73,9 +73,9 @@ public class Bishop extends Piece {
             x++;
             y--;
             Pair newPos = new Pair(x, y);
-            if(currgame.game[x][y] == null){
+            if(testGame[x][y] == null){
                 validMoves.add(newPos);
-            } else if(this.color == 0 && currgame.game[x][y].color == 1 || this.color == 1 && currgame.game[x][y].color == 0){ //(White capture black or Black capture white)
+            } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
                 x = this.position.x;
                 y = this.position.y;

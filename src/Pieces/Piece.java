@@ -6,9 +6,9 @@ import Data.Pair;
 import java.util.ArrayList;
 
 public abstract class Piece {
-    Pair position;
-    int color; // 0 = white, 1 = black
-    ArrayList<Pair> validMoves = new ArrayList<>();
+    public Pair position;
+    public int color; // 0 = white, 1 = black
+    public ArrayList<Pair> validMoves = new ArrayList<>();
 
     public Piece(Pair position, int color){
         this.position = position;
@@ -17,7 +17,7 @@ public abstract class Piece {
 
     public abstract boolean isValidPath(Pair position);
 
-    public abstract void setValidMoves(Game game);
+    public abstract void setValidMoves(Piece[][] testGame); //Does not consider self-induced checks this in handled in Game class
 
     public void updatePosition(Pair position){
         this.position = position;

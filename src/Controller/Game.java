@@ -47,10 +47,10 @@ public class Game {
 
         game[4][7] = new King(new Pair(4, 7), 0);
 
-        for(int i = 0; i < game.length; i++) {
-            for (int j = 0; j < game[i].length; j++) {
-                if(game[i][j] != null){
-                    game[i][j].setValidMoves(this);
+        for (Piece[] pieces : game) {
+            for (Piece piece : pieces) {
+                if (piece != null) {
+                    piece.setValidMoves(this.game);
                 }
             }
         }
@@ -58,10 +58,121 @@ public class Game {
     }
 
     public void move(Pair startPos, Pair endPos){
+        //Create a new test Board to check for invalid moves so that you don't mess with the real board while checking
+        Piece[][] testGame = dupeBoard(game);
+        if(game[startPos.x][startPos.y] == null){ //Checks for player trying to move null space
+            System.out.println("No Piece at " + startPos);
+        } else if(moveNumber % 2 != game[startPos.x][startPos.y].color){ //Checks for player trying to move opponents piece
+            System.out.println("Cannot move opponent's Piece at " + startPos);
+        } else {
+            if(game[startPos.x][startPos.y].validMoves.contains(endPos)){ //Piece at atartX,startY can move to endX, endY
 
+                testGame[startPos.x][startPos.y].updatePosition(endPos);
+                testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                testGame[startPos.x][startPos.y] = null;
+                setValidPieceMoves(testGame);
+
+                if(isCheck(testGame)){ //Putting yourself in check
+                    System.out.println("Putting yourself in check if you move from " + startPos + " to " + endPos);
+                } else if(isOpponentCheck(testGame)) { //Putting opponent in check
+                    game = testGame;
+                    if(isCheckmate()){
+                        if(moveNumber % 2 == 0){
+                            System.out.println("White Wins");
+                        } else {
+                            System.out.println("Black Wins");
+                        }
+                    }
+                    System.out.println("Move Successful");
+                    System.out.println("Check");
+                } else {
+                    game = testGame;
+                    System.out.println("Move Successful");
+                }
+            } else {
+                System.out.println("Invalid move from " + startPos + " to " + endPos);
+            }
+        }
     }
 
-    public boolean isCheck(){
+    public void setValidPieceMoves(Piece[][] testGame){
+        for (Piece[] pieces : testGame) {
+            for (Piece piece : pieces) {
+                piece.setValidMoves(testGame);
+            }
+        }
+    }
+
+    public Piece[][] dupeBoard(Piece[][] testGame){
+        Piece[][] newGame = new Piece[8][8];
+        for(int i = 0; i < testGame.length; i++) {
+            for (int j = 0; j < testGame[i].length; j++) {
+                newGame[i][j] = testGame[i][j];
+            }
+        }
+        return newGame;
+    }
+
+    public boolean isCheckmate(){
+        Piece[][] testGame = dupeBoard(game);
+        for(int i = 0; i < game.length; i++) {
+            for (int j = 0; j < game[i].length; j++) {
+                if(moveNumber % 2 != game[i][j].color) { //Finds all opponent's pieces
+                    for (Pair pair : game[i][j].validMoves) {
+
+                        testGame[i][j].updatePosition(pair);
+                        testGame[pair.x][pair.y] = testGame[i][j];
+                        testGame[i][j] = null;
+                        setValidPieceMoves(testGame);
+
+                        if(!(isOpponentCheck(testGame))){
+                            return false;
+                        }
+                        testGame = dupeBoard(game);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isCheck(Piece[][] testGame){
+        Pair allyKingPos = null;
+        for(int i = 0; i < testGame.length; i++) {
+            for (int j = 0; j < testGame[i].length; j++) {
+                if(testGame[i][j] instanceof King && moveNumber % 2 == testGame[i][j].color){//Finds your King
+                    allyKingPos = new Pair(i, j);
+                    break;
+                }
+            }
+        }
+        for (Piece[] pieces : testGame) {
+            for (Piece piece : pieces) {
+                if (piece.validMoves.contains(allyKingPos)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isOpponentCheck(Piece[][] testGame){
+        Pair opponentKingPos = null;
+        for(int i = 0; i < testGame.length; i++) {
+            for (int j = 0; j < testGame[i].length; j++) {
+                if((testGame[i][j] instanceof King) && (moveNumber % 2 != testGame[i][j].color)){//Finds opponents King
+                    opponentKingPos = new Pair(i, j);
+                    break;
+                }
+            }
+        }
+        for (Piece[] pieces : testGame) {
+            for (Piece piece : pieces) {
+                if (piece.validMoves.contains(opponentKingPos)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
