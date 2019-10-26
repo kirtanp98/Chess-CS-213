@@ -1,20 +1,23 @@
 package Pieces;
 
+import Controller.Game;
+import Data.Pair;
+
 public class Rook extends Piece {
 
-    public Rook(int xPos, int yPos, int color) {
-        super(xPos, yPos, color);
+    public Rook(Pair position, int color) {
+        super(position, color);
     }
 
     @Override
-    public boolean isValidPath(int xPos, int yPos) {
-        if(this.xPos == xPos){
-            if(yPos >= 0 && yPos < 8){
+    public boolean isValidPath(Pair position) {
+        if(this.position.x == position.x){
+            if(position.y >= 0 && position.y < 8){
                 return true;
             }
         }
-        if(this.yPos == yPos){
-            if(xPos >= 0 && xPos < 8){
+        if(this.position.y == position.y){
+            if(position.x >= 0 && position.x < 8){
                 return true;
             }
         }
@@ -22,6 +25,11 @@ public class Rook extends Piece {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void setValidMoves(Game game) {
+
     }
 
     @Override

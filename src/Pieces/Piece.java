@@ -1,23 +1,26 @@
 package Pieces;
 
-public class Piece {
-    int xPos;
-    int yPos;
-    int color;
+import Controller.Game;
+import Data.Pair;
 
-    public Piece(int xPos, int yPos, int color){
-        this.xPos = xPos;
-        this.yPos = yPos;
+import java.util.ArrayList;
+
+public abstract class Piece {
+    Pair position;
+    int color; // 0 = white, 1 = black
+    ArrayList<Pair> validMoves = new ArrayList<>();
+
+    public Piece(Pair position, int color){
+        this.position = position;
         this.color = color;
     }
 
-    public boolean isValidPath(int xPos, int yPos){
-        return false;
-    }
+    public abstract boolean isValidPath(Pair position);
 
-    public void updatePosition(int xPos, int yPos){
-        this.xPos = xPos;
-        this.yPos = yPos;
+    public abstract void setValidMoves(Game game);
+
+    public void updatePosition(Pair position){
+        this.position = position;
     }
 
     //TODO Implement getType()
@@ -25,12 +28,5 @@ public class Piece {
 //        return this.getType();
 //    }
     @Override
-    public String toString() {
-        String result = "";
-        if(xPos % 2 == 1 && yPos % 2 == 0 || xPos % 2 == 0 && yPos % 2 == 1 ){
-            return "##";
-        }else{
-            return "  ";
-        }
-    }
+    public abstract String toString();
 }

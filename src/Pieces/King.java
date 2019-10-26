@@ -1,21 +1,29 @@
 package Pieces;
 
+import Controller.Game;
+import Data.Pair;
+
 public class King extends Piece {
 
-    public King(int xPos, int yPos, int color) {
-        super(xPos, yPos, color);
+    public King(Pair position, int color) {
+        super(position, color);
     }
 
     @Override
-    public boolean isValidPath(int xPos, int yPos){
-        if(xPos > this.xPos + 1 ||xPos < this.xPos - 1){
+    public boolean isValidPath(Pair position){
+        if(position.x > this.position.x + 1 ||position.x < this.position.x - 1){
             return false;
         }
-        if(yPos > this.yPos + 1 || yPos < this.yPos - 1){
+        if(position.y > this.position.y + 1 || position.y < this.position.y - 1){
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public void setValidMoves(Game game) {
+
     }
 
     @Override
