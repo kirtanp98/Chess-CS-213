@@ -3,6 +3,9 @@ package Controller;
 import Data.Pair;
 import Pieces.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Game {
     public Piece[][] game = new Piece[8][8];// [x][y] x goes to the right and y goes down
     public int moveNumber = 0;
@@ -70,6 +73,7 @@ public class Game {
         Pair endPos = new Pair(endX, endY);
 
         move(startPos, endPos);
+        System.out.println(this);
         //return position;
     }
 
@@ -87,6 +91,11 @@ public class Game {
                 testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
                 testGame[startPos.x][startPos.y] = null;
                 setValidPieceMoves(testGame);
+
+                if((testGame[endPos.x][endPos.y] instanceof Pawn) && (((testGame[endPos.x][endPos.y].color == 0) && (endPos.y == 0)) || (testGame[endPos.x][endPos.y].color == 1) && (endPos.y == 7))){ //Promotion
+                    testGame[endPos.x][endPos.y] = new Queen(new Pair(endPos.x, endPos.y), testGame[endPos.x][endPos.y].color);
+                    setValidPieceMoves(testGame);
+                }
 
                 if(isCheck(testGame)){ //Putting yourself in check
                     System.out.println("Putting yourself in check if you move from " + startPos + " to " + endPos);
@@ -118,7 +127,9 @@ public class Game {
     public void setValidPieceMoves(Piece[][] testGame){
         for (Piece[] pieces : testGame) {
             for (Piece piece : pieces) {
-                piece.setValidMoves(testGame);
+                if(piece != null){
+                    piece.setValidMoves(testGame);
+                }
             }
         }
     }
@@ -127,7 +138,39 @@ public class Game {
         Piece[][] newGame = new Piece[8][8];
         for(int i = 0; i < testGame.length; i++) {
             for (int j = 0; j < testGame[i].length; j++) {
-                newGame[i][j] = testGame[i][j];
+                if(testGame[i][j] == null){
+                    newGame[i][j] = null;
+                } else if(testGame[i][j] instanceof Pawn){
+                    Pawn p = (Pawn) testGame[i][j];
+                    Pawn newP = new Pawn(new Pair(p.position.x, p.position.y), p.color);
+                    newP.validMoves = new ArrayList<>(p.validMoves);
+                    newGame[i][j] = newP;
+                } else if(testGame[i][j] instanceof Knight){
+                    Knight p = (Knight) testGame[i][j];
+                    Knight newP = new Knight(new Pair(p.position.x, p.position.y), p.color);
+                    newP.validMoves = new ArrayList<>(p.validMoves);
+                    newGame[i][j] = newP;
+                } else if(testGame[i][j] instanceof Rook){
+                    Rook p = (Rook) testGame[i][j];
+                    Rook newP = new Rook(new Pair(p.position.x, p.position.y), p.color);
+                    newP.validMoves = new ArrayList<>(p.validMoves);
+                    newGame[i][j] = newP;
+                } else if(testGame[i][j] instanceof Bishop){
+                    Bishop p = (Bishop) testGame[i][j];
+                    Bishop newP = new Bishop(new Pair(p.position.x, p.position.y), p.color);
+                    newP.validMoves = new ArrayList<>(p.validMoves);
+                    newGame[i][j] = newP;
+                } else if(testGame[i][j] instanceof Queen){
+                    Queen p = (Queen) testGame[i][j];
+                    Queen newP = new Queen(new Pair(p.position.x, p.position.y), p.color);
+                    newP.validMoves = new ArrayList<>(p.validMoves);
+                    newGame[i][j] = newP;
+                } else if(testGame[i][j] instanceof King){
+                    King p = (King) testGame[i][j];
+                    King newP = new King(new Pair(p.position.x, p.position.y), p.color);
+                    newP.validMoves = new ArrayList<>(p.validMoves);
+                    newGame[i][j] = newP;
+                }
             }
         }
         return newGame;
@@ -137,18 +180,23 @@ public class Game {
         Piece[][] testGame = dupeBoard(game);
         for(int i = 0; i < game.length; i++) {
             for (int j = 0; j < game[i].length; j++) {
-                if(moveNumber % 2 != game[i][j].color) { //Finds all opponent's pieces
-                    for (Pair pair : game[i][j].validMoves) {
+                if(game[i][j] != null) {
+                    if (moveNumber % 2 != game[i][j].color) { //Finds all opponent's pieces
+                        Pair[] valid = new Pair[game[i][j].validMoves.size()];
+                        game[i][j].validMoves.toArray(valid);
 
-                        testGame[i][j].updatePosition(pair);
-                        testGame[pair.x][pair.y] = testGame[i][j];
-                        testGame[i][j] = null;
-                        setValidPieceMoves(testGame);
+                        for(Pair pair : valid){
 
-                        if(!(isOpponentCheck(testGame))){
-                            return false;
+                            testGame[i][j].updatePosition(pair);
+                            testGame[pair.x][pair.y] = testGame[i][j];
+                            testGame[i][j] = null;
+                            setValidPieceMoves(testGame);
+
+                            if (!(isOpponentCheck(testGame))) {
+                                return false;
+                            }
+                            testGame = dupeBoard(game);
                         }
-                        testGame = dupeBoard(game);
                     }
                 }
             }
@@ -168,8 +216,10 @@ public class Game {
         }
         for (Piece[] pieces : testGame) {
             for (Piece piece : pieces) {
-                if (piece.validMoves.contains(allyKingPos)){
-                    return true;
+                if(piece != null){
+                    if (piece.validMoves.contains(allyKingPos)){
+                        return true;
+                    }
                 }
             }
         }
@@ -188,8 +238,10 @@ public class Game {
         }
         for (Piece[] pieces : testGame) {
             for (Piece piece : pieces) {
-                if (piece.validMoves.contains(opponentKingPos)){
-                    return true;
+                if(piece != null){
+                    if (piece.validMoves.contains(opponentKingPos)){
+                        return true;
+                    }
                 }
             }
         }

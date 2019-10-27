@@ -16,6 +16,8 @@ public class King extends Piece {
     @Override
     public void setValidMoves(Piece[][] testGame) {
 
+        validMoves.clear();
+
         checkEndSpace(testGame, new Pair(position.x - 1, position.y));
         checkEndSpace(testGame, new Pair(position.x - 1, position.y - 1));
         checkEndSpace(testGame, new Pair(position.x - 1, position.y + 1));
