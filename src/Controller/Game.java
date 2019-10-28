@@ -10,6 +10,7 @@ public class Game {
     public Piece[][] game = new Piece[8][8];// [x][y] x goes to the right and y goes down
     public int moveNumber = 0;
     public boolean gameFinished = false;
+    private boolean drawCondition = false;
 
     public Game(){
 
@@ -64,6 +65,32 @@ public class Game {
     public void moveStringConverter(String move){ //promotion is not taken in to consideration yet
         String moves[] = move.split(" ");
 
+        if (moves.length == 1){
+            if(moves[0].equals("resign")){
+                moveNumber++;
+                if(moveNumber % 2 == 0){
+                    System.out.println("White Wins");
+                    gameFinished = true;
+                } else {
+                    System.out.println("Black Wins");
+                    gameFinished = true;
+                }
+                return;
+            }
+
+            if(moves[0].equals("draw")){
+                if(drawCondition){
+                    gameFinished = true;
+                }else {
+                    System.out.println("Draw has not been asked");
+                }
+            }
+        }
+
+        if (drawCondition) {
+            drawCondition = false;
+        }
+
         int startX = letterToInt(moves[0].charAt(0));
         int startY = Math.abs(8 -Character.getNumericValue(moves[0].charAt(1)));
         int endX =  letterToInt(moves[1].charAt(0));
@@ -72,9 +99,18 @@ public class Game {
         Pair startPos = new Pair(startX, startY);
         Pair endPos = new Pair(endX, endY);
 
+        if (moves.length > 2){
+            if(moves[2].equals("draw?")){
+                drawCondition = true;
+            }
+            else if (moves[2].length() == 1){
+                promotion(startPos, endPos, moves[2]);
+                return;
+            }
+        }
+
         move(startPos, endPos);
         System.out.println(this);
-        //return position;
     }
 
     public void move(Pair startPos, Pair endPos){
@@ -122,6 +158,47 @@ public class Game {
                 System.out.println("Invalid move from " + startPos + " to " + endPos);
             }
         }
+    }
+
+    public void promotion(Pair startPos, Pair endPos, String promotion){
+        move(startPos, endPos);
+        Piece current = game[endPos.x][endPos.y];
+        Piece promotionReplacement = null;
+
+        if(promotion.equals("R")){
+            promotionReplacement = new Rook(endPos, current.color);
+        }
+        else if(promotion.equals("N")){
+            promotionReplacement = new Knight(endPos, current.color);
+        }
+        else if(promotion.equals("B")){
+            promotionReplacement = new Bishop(endPos, current.color);
+        }
+        else if(promotion.equals("Q")){
+            promotionReplacement = new Queen(endPos, current.color);
+        }
+        else {
+            System.out.println("Can not promote");
+        }
+        game[endPos.x][endPos.y] = promotionReplacement;
+
+        Piece[][] testGame = dupeBoard(game);
+
+        if(isOpponentCheck(testGame)) {
+            game = testGame;
+            if (isCheckmate()) {
+                if (moveNumber % 2 == 0) {
+                    System.out.println("White Wins");
+                    gameFinished = true;
+                } else {
+                    System.out.println("Black Wins");
+                    gameFinished = true;
+                }
+            }
+            System.out.println("Check");
+        }
+
+
     }
 
     public void setValidPieceMoves(Piece[][] testGame){
@@ -174,6 +251,10 @@ public class Game {
             }
         }
         return newGame;
+    }
+
+    public boolean isStalemate(){
+        return false;
     }
 
     public boolean isCheckmate(){
@@ -246,6 +327,22 @@ public class Game {
             }
         }
         return false;
+    }
+
+    public boolean castle(Pair king, Pair rook){
+        Piece[][] testGame = dupeBoard(game);
+        King testKing = new King(new Pair(1,1),1);
+        Rook testRook = new Rook(new Pair(1,1),1);
+        if(testGame[king.x][king.y].getClass() == testKing.getClass() && testGame[rook.x+1][rook.y].getClass() == testRook.getClass()){
+            if(king.x != 4 && !(king.y == 0|| king.y == 7)){
+                System.out.println("King has moved");
+                return false;
+            }
+
+            
+
+        }
+
     }
 
     public int letterToInt(char c){
