@@ -120,14 +120,67 @@ public class Game {
             System.out.println("No Piece at " + startPos);
         } else if(moveNumber % 2 != game[startPos.x][startPos.y].color){ //Checks for player trying to move opponents piece
             System.out.println("Cannot move opponent's Piece at " + startPos);
+        } else if(castle(startPos)){
+            testGame[startPos.x][startPos.y].updatePosition(endPos);
+            testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+            testGame[startPos.x][startPos.y] = null;
+
+            testGame[7][startPos.y].updatePosition(new Pair(endPos.x-1,endPos.y));
+            testGame[endPos.x-1][endPos.y] = testGame[7][startPos.y];
+
+            testGame[7][startPos.y] = null;
+            setValidPieceMoves(testGame);
+            moveNumber++;
+            game = testGame;
+            // checking systems
+        } else if(pawnCapture(startPos, endPos)){
+            if(testGame[endPos.x][endPos.y] != null) {
+                testGame[startPos.x][startPos.y].updatePosition(endPos);
+                testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                testGame[startPos.x][startPos.y] = null;
+                setValidPieceMoves(testGame);
+                moveNumber++;
+                game = testGame;
+            } else {
+                if(testGame[startPos.x][startPos.y].color == 0) {
+                    testGame[startPos.x][startPos.y - 1] = null;
+                }else {
+                    testGame[startPos.x][startPos.y + 1] = null;
+                }
+                testGame[startPos.x][startPos.y].updatePosition(endPos);
+                testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                testGame[startPos.x][startPos.y] = null;
+                setValidPieceMoves(testGame);
+                moveNumber++;
+                game = testGame;
+            }
+            // checking systems
         } else {
             if(game[startPos.x][startPos.y].validMoves.contains(endPos)){ //Piece at atartX,startY can move to endX, endY
+
+
 
                 testGame[startPos.x][startPos.y].updatePosition(endPos);
                 testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
                 testGame[startPos.x][startPos.y] = null;
                 setValidPieceMoves(testGame);
 
+                if((testGame[endPos.x][endPos.y] instanceof Pawn)){
+                    int moveNumber = Math.abs(endPos.y - startPos.y);
+                    if (moveNumber == 2){
+                        Pawn temp = (Pawn)testGame[endPos.x][endPos.y];
+                        temp.twoMove = true;
+                        testGame[endPos.x][endPos.y] = temp;
+                        setValidPieceMoves(testGame);
+                    } else {
+                        Pawn temp = (Pawn)testGame[endPos.x][endPos.y];
+                        temp.twoMove = false;
+                        testGame[endPos.x][endPos.y] = temp;
+                        setValidPieceMoves(testGame);
+                    }
+                }
+
+                //@TODO fix this promotion
                 if((testGame[endPos.x][endPos.y] instanceof Pawn) && (((testGame[endPos.x][endPos.y].color == 0) && (endPos.y == 0)) || (testGame[endPos.x][endPos.y].color == 1) && (endPos.y == 7))){ //Promotion
                     testGame[endPos.x][endPos.y] = new Queen(new Pair(endPos.x, endPos.y), testGame[endPos.x][endPos.y].color);
                     setValidPieceMoves(testGame);
@@ -329,20 +382,66 @@ public class Game {
         return false;
     }
 
-    public boolean castle(Pair king, Pair rook){
+    public boolean castle(Pair king){
         Piece[][] testGame = dupeBoard(game);
-        King testKing = new King(new Pair(1,1),1);
-        Rook testRook = new Rook(new Pair(1,1),1);
-        if(testGame[king.x][king.y].getClass() == testKing.getClass() && testGame[rook.x+1][rook.y].getClass() == testRook.getClass()){
+
+        if((testGame[king.x][king.y] instanceof King) && (testGame[7][king.y] instanceof Rook)){
             if(king.x != 4 && !(king.y == 0|| king.y == 7)){
-                System.out.println("King has moved");
                 return false;
             }
 
-            
+            if(king.x != 7 && !(king.y == 0|| king.y == 7)){
+                return false;
+            }
 
+            if(!(testGame[king.x+1][king.y] == null && testGame[king.x+2][king.y] == null)){
+                return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean pawnCapture(Pair start, Pair end) {
+        Piece[][] testGame = dupeBoard(game);
+        if(testGame[start.x][start.y] == null || testGame[end.x][end.y] == null){
+            return false;
+        }
+        if(!(testGame[start.x][start.y] instanceof Pawn)){
+            return false;
         }
 
+        if(testGame[start.x][start.y].color == 0){
+            if(end.y == start.y-1 && (end.x == start.x+1 || end.x == start.x-1)){
+                if(testGame[end.x][end.y]!= null){
+                    return true;
+                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y-1] instanceof Pawn) && testGame[end.x][end.y-1].color == 1) {
+                    Pawn temp = (Pawn) testGame[end.x][end.y-1];
+                    if(temp.twoMove){
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+        }else{
+            if(end.y == start.y+1 && (end.x == start.x+1 || end.x == start.x-1)){
+                if(testGame[end.x][end.y]!= null){
+                    return true;
+                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y+1] instanceof Pawn) && testGame[end.x][end.y+1].color == 0) {
+                    Pawn temp = (Pawn) testGame[end.x][end.y+1];
+                    if(temp.twoMove){
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return false;
     }
 
     public int letterToInt(char c){

@@ -4,6 +4,8 @@ import Data.Pair;
 
 public class Pawn extends Piece {
 
+    public boolean twoMove = false;
+
     public Pawn(Pair position, int color) {
         super(position, color);
     }
