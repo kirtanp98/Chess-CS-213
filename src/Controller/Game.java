@@ -65,7 +65,7 @@ public class Game {
     public void moveStringConverter(String move){ //promotion is not taken in to consideration yet
         String moves[] = move.split(" ");
 
-        if (moves.length < 1){
+        if (moves.length < 1 || moves.length > 3){
             System.out.println("Not correct format");
             return;
         }
@@ -102,6 +102,11 @@ public class Game {
         int endX =  letterToInt(moves[1].charAt(0));
         int endY = Math.abs(8 -Character.getNumericValue(moves[1].charAt(1)));
 
+        if(startX > 7 || startX < 0 || startY > 7 || startY < 0 || endX > 7 || endX < 0 || endY > 7 || endY < 0){
+            System.out.println("Input out of bound");
+            return;
+        }
+
         Pair startPos = new Pair(startX, startY);
         Pair endPos = new Pair(endX, endY);
 
@@ -126,50 +131,38 @@ public class Game {
             System.out.println("No Piece at " + startPos);
         } else if(moveNumber % 2 != game[startPos.x][startPos.y].color){ //Checks for player trying to move opponents piece
             System.out.println("Cannot move opponent's Piece at " + startPos);
-        } else if(castle(startPos)){
-            testGame[startPos.x][startPos.y].updatePosition(endPos);
-            testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
-            testGame[startPos.x][startPos.y] = null;
-
-            testGame[7][startPos.y].updatePosition(new Pair(endPos.x-1,endPos.y));
-            testGame[endPos.x-1][endPos.y] = testGame[7][startPos.y];
-
-            testGame[7][startPos.y] = null;
-            setValidPieceMoves(testGame);
-            moveNumber++;
-            game = testGame;
-            // checking systems
-        } else if(pawnCapture(startPos, endPos)){
-            if(testGame[endPos.x][endPos.y] != null) {
-                testGame[startPos.x][startPos.y].updatePosition(endPos);
-                testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
-                testGame[startPos.x][startPos.y] = null;
-                setValidPieceMoves(testGame);
-                moveNumber++;
-                game = testGame;
-            } else {
-                if(testGame[startPos.x][startPos.y].color == 0) {
-                    testGame[endPos.x][endPos.y + 1] = null;
-                }else {
-                    testGame[endPos.x][endPos.y - 1] = null;
-                }
-                testGame[startPos.x][startPos.y].updatePosition(endPos);
-                testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
-                testGame[startPos.x][startPos.y] = null;
-                setValidPieceMoves(testGame);
-                moveNumber++;
-                game = testGame;
-            }
-            // checking systems
         } else {
+            boolean castle = castle(startPos, endPos);
+            boolean enPassent = pawnCapture(startPos, endPos);
+
             if(game[startPos.x][startPos.y].validMoves.contains(endPos)){ //Piece at atartX,startY can move to endX, endY
 
+                if(castle){
+                    testGame[startPos.x][startPos.y].updatePosition(endPos);
+                    testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                    testGame[startPos.x][startPos.y] = null;
 
+                    testGame[7][startPos.y].updatePosition(new Pair(endPos.x-1,endPos.y));
+                    testGame[endPos.x-1][endPos.y] = testGame[7][startPos.y];
 
-                testGame[startPos.x][startPos.y].updatePosition(endPos);
-                testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
-                testGame[startPos.x][startPos.y] = null;
-                setValidPieceMoves(testGame);
+                    testGame[7][startPos.y] = null;
+                    setValidPieceMoves(testGame);
+                } else if(enPassent && testGame[endPos.x][endPos.y] == null){
+                    if(testGame[startPos.x][startPos.y].color == 0) {
+                        testGame[endPos.x][endPos.y + 1] = null;
+                    }else {
+                        testGame[endPos.x][endPos.y - 1] = null;
+                    }
+                    testGame[startPos.x][startPos.y].updatePosition(endPos);
+                    testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                    testGame[startPos.x][startPos.y] = null;
+                    setValidPieceMoves(testGame);
+                }else {
+                    testGame[startPos.x][startPos.y].updatePosition(endPos);
+                    testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                    testGame[startPos.x][startPos.y] = null;
+                    setValidPieceMoves(testGame);
+                }
 
                 if((testGame[endPos.x][endPos.y] instanceof Pawn)){
                     int moveNumber = Math.abs(endPos.y - startPos.y);
@@ -390,7 +383,7 @@ public class Game {
         return false;
     }
 
-    public boolean castle(Pair king){
+    public boolean castle(Pair king, Pair endPos){
         Piece[][] testGame = dupeBoard(game);
 
         if((testGame[king.x][king.y] instanceof King) && (testGame[7][king.y] instanceof Rook)){
@@ -408,6 +401,8 @@ public class Game {
         } else {
             return false;
         }
+        game[king.x][king.y].validMoves.add(new Pair(endPos.x, endPos.y));
+        game[7][king.y].validMoves.add(new Pair(endPos.x-1, endPos.y));
         return true;
     }
 
@@ -423,10 +418,12 @@ public class Game {
         if(testGame[start.x][start.y].color == 0){
             if(end.y == start.y-1 && (end.x == start.x+1 || end.x == start.x-1)){
                 if(testGame[end.x][end.y]!= null){
+                    game[start.x][start.y].validMoves.add(end);
                     return true;
                 }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y+1] instanceof Pawn) && testGame[end.x][end.y+1].color == 1) {
                     Pawn temp = (Pawn) testGame[end.x][end.y+1];
                     if(temp.twoMove){
+                        game[start.x][start.y].validMoves.add(end);
                         return true;
                     }
                 } else {
@@ -437,10 +434,12 @@ public class Game {
         }else{
             if(end.y == start.y+1 && (end.x == start.x+1 || end.x == start.x-1)){
                 if(testGame[end.x][end.y]!= null){
+                    game[start.x][start.y].validMoves.add(end);
                     return true;
                 }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y-1] instanceof Pawn) && testGame[end.x][end.y-1].color == 0) {
                     Pawn temp = (Pawn) testGame[end.x][end.y-1];
                     if(temp.twoMove){
+                        game[start.x][start.y].validMoves.add(end);
                         return true;
                     }
                 } else {
