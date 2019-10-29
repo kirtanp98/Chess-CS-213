@@ -65,6 +65,11 @@ public class Game {
     public void moveStringConverter(String move){ //promotion is not taken in to consideration yet
         String moves[] = move.split(" ");
 
+        if (moves.length < 1){
+            System.out.println("Not correct format");
+            return;
+        }
+
         if (moves.length == 1){
             if(moves[0].equals("resign")){
                 moveNumber++;
@@ -81,6 +86,7 @@ public class Game {
             if(moves[0].equals("draw")){
                 if(drawCondition){
                     gameFinished = true;
+                    return;
                 }else {
                     System.out.println("Draw has not been asked");
                 }
@@ -143,9 +149,9 @@ public class Game {
                 game = testGame;
             } else {
                 if(testGame[startPos.x][startPos.y].color == 0) {
-                    testGame[startPos.x][startPos.y - 1] = null;
+                    testGame[endPos.x][endPos.y + 1] = null;
                 }else {
-                    testGame[startPos.x][startPos.y + 1] = null;
+                    testGame[endPos.x][endPos.y - 1] = null;
                 }
                 testGame[startPos.x][startPos.y].updatePosition(endPos);
                 testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
@@ -233,9 +239,10 @@ public class Game {
         else {
             System.out.println("Can not promote");
         }
-        game[endPos.x][endPos.y] = promotionReplacement;
-
         Piece[][] testGame = dupeBoard(game);
+
+        testGame[endPos.x][endPos.y] = promotionReplacement;
+        setValidPieceMoves(testGame);
 
         if(isOpponentCheck(testGame)) {
             game = testGame;
@@ -273,6 +280,7 @@ public class Game {
                 } else if(testGame[i][j] instanceof Pawn){
                     Pawn p = (Pawn) testGame[i][j];
                     Pawn newP = new Pawn(new Pair(p.position.x, p.position.y), p.color);
+                    newP.twoMove = p.twoMove;
                     newP.validMoves = new ArrayList<>(p.validMoves);
                     newGame[i][j] = newP;
                 } else if(testGame[i][j] instanceof Knight){
@@ -405,7 +413,7 @@ public class Game {
 
     public boolean pawnCapture(Pair start, Pair end) {
         Piece[][] testGame = dupeBoard(game);
-        if(testGame[start.x][start.y] == null || testGame[end.x][end.y] == null){
+        if(testGame[start.x][start.y] == null){
             return false;
         }
         if(!(testGame[start.x][start.y] instanceof Pawn)){
@@ -416,8 +424,8 @@ public class Game {
             if(end.y == start.y-1 && (end.x == start.x+1 || end.x == start.x-1)){
                 if(testGame[end.x][end.y]!= null){
                     return true;
-                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y-1] instanceof Pawn) && testGame[end.x][end.y-1].color == 1) {
-                    Pawn temp = (Pawn) testGame[end.x][end.y-1];
+                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y+1] instanceof Pawn) && testGame[end.x][end.y+1].color == 1) {
+                    Pawn temp = (Pawn) testGame[end.x][end.y+1];
                     if(temp.twoMove){
                         return true;
                     }
@@ -430,8 +438,8 @@ public class Game {
             if(end.y == start.y+1 && (end.x == start.x+1 || end.x == start.x-1)){
                 if(testGame[end.x][end.y]!= null){
                     return true;
-                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y+1] instanceof Pawn) && testGame[end.x][end.y+1].color == 0) {
-                    Pawn temp = (Pawn) testGame[end.x][end.y+1];
+                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y-1] instanceof Pawn) && testGame[end.x][end.y-1].color == 0) {
+                    Pawn temp = (Pawn) testGame[end.x][end.y-1];
                     if(temp.twoMove){
                         return true;
                     }
