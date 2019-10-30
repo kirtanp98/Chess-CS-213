@@ -179,12 +179,6 @@ public class Game {
                     }
                 }
 
-                //@TODO fix this promotion
-                if((testGame[endPos.x][endPos.y] instanceof Pawn) && (((testGame[endPos.x][endPos.y].color == 0) && (endPos.y == 0)) || (testGame[endPos.x][endPos.y].color == 1) && (endPos.y == 7))){ //Promotion
-                    testGame[endPos.x][endPos.y] = new Queen(new Pair(endPos.x, endPos.y), testGame[endPos.x][endPos.y].color);
-                    setValidPieceMoves(testGame);
-                }
-
                 if(isCheck(testGame)){ //Putting yourself in check
                     System.out.println("Putting yourself in check if you move from " + startPos + " to " + endPos);
                 } else if(isOpponentCheck(testGame)) { //Putting opponent in check
