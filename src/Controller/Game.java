@@ -164,6 +164,8 @@ public class Game {
                     setValidPieceMoves(testGame);
                 }
 
+                pawnTwoMoveReset(testGame);
+
                 if((testGame[endPos.x][endPos.y] instanceof Pawn)){
                     int moveNumber = Math.abs(endPos.y - startPos.y);
                     if (moveNumber == 2){
@@ -476,6 +478,22 @@ public class Game {
         }
 
         return false;
+    }
+
+    public void pawnTwoMoveReset(Piece[][] testGame){
+        for(int i = 0; i < testGame.length; i++){
+            if(testGame[i][2] instanceof Pawn){
+                Pawn temp = (Pawn) testGame[i][2];
+                temp.twoMove = false;
+                testGame[i][2] = temp;
+            }
+            if(testGame[i][5] instanceof Pawn){
+                Pawn temp = (Pawn) testGame[i][5];
+                temp.twoMove = false;
+                testGame[i][2] = temp;
+            }
+        }
+        setValidPieceMoves(testGame);
     }
 
     public int letterToInt(char c){
