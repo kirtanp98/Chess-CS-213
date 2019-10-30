@@ -124,6 +124,7 @@ public class Game {
 
         move(startPos, endPos);
         System.out.println(this);
+        System.out.println();
     }
 
     public void move(Pair startPos, Pair endPos){
@@ -224,7 +225,7 @@ public class Game {
                             gameFinished = true;
                         }
                     }
-                    System.out.println("Move Successful");
+                    //System.out.println("Move Successful");
                     moveNumber++;
                     System.out.println("Check");
                     if(game[startPos.x][startPos.y] instanceof King){
@@ -246,7 +247,7 @@ public class Game {
                         System.out.println("In Stalemate");
                         gameFinished = true;
                     }
-                    System.out.println("Move Successful");
+                    //System.out.println("Move Successful");
                     moveNumber++;
                     if(game[startPos.x][startPos.y] instanceof King){
                         King temp = (King)testGame[startPos.x][startPos.y];
@@ -264,6 +265,7 @@ public class Game {
                 }
             } else {
                 System.out.println("Invalid move from " + startPos + " to " + endPos);
+                System.out.println();
             }
         }
     }

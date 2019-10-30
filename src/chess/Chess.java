@@ -28,12 +28,20 @@ public class Chess {
 */
         Scanner scanner = new Scanner(System.in);
         System.out.println(newGame);
+        System.out.println();
 
         while(!newGame.gameFinished) {
+            if(newGame.moveNumber % 2 == 0) {
+                System.out.print("White's Move: ");
+            }else{
+                System.out.print("Black's Move: ");
+            }
             String input = scanner.nextLine();
+            System.out.println();
             newGame.moveStringConverter(input);
         }
 
+        scanner.close();
     }
 
 }
