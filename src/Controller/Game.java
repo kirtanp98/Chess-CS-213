@@ -134,36 +134,11 @@ public class Game {
         } else if(moveNumber % 2 != game[startPos.x][startPos.y].color){ //Checks for player trying to move opponents piece
             System.out.println("Cannot move opponent's Piece at " + startPos);
         } else {
-            boolean castle = castle(startPos, endPos);
             boolean enPassent = pawnCapture(startPos, endPos);
 
             if(game[startPos.x][startPos.y].validMoves.contains(endPos)){ //Piece at atartX,startY can move to endX, endY
 
-                if(game[startPos.x][startPos.y] instanceof King){
-                    King temp = (King)testGame[startPos.x][startPos.y];
-                    temp.moved = true;
-                    testGame[startPos.x][startPos.y] = temp;
-                    setValidPieceMoves(testGame);
-                }
-
-                if(game[startPos.x][startPos.y] instanceof Rook){
-                    Rook temp = (Rook)testGame[startPos.x][startPos.y];
-                    temp.moved = true;
-                    testGame[startPos.x][startPos.y] = temp;
-                    setValidPieceMoves(testGame);
-                }
-
-                if(castle){
-                    testGame[startPos.x][startPos.y].updatePosition(endPos);
-                    testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
-                    testGame[startPos.x][startPos.y] = null;
-
-                    testGame[7][startPos.y].updatePosition(new Pair(endPos.x-1,endPos.y));
-                    testGame[endPos.x-1][endPos.y] = testGame[7][startPos.y];
-
-                    testGame[7][startPos.y] = null;
-                    setValidPieceMoves(testGame);
-                } else if(enPassent && testGame[endPos.x][endPos.y] == null){
+                if(enPassent && testGame[endPos.x][endPos.y] == null){
                     if(testGame[startPos.x][startPos.y].color == 0) {
                         testGame[endPos.x][endPos.y + 1] = null;
                     }else {
@@ -174,10 +149,44 @@ public class Game {
                     testGame[startPos.x][startPos.y] = null;
                     setValidPieceMoves(testGame);
                 }else {
-                    testGame[startPos.x][startPos.y].updatePosition(endPos);
-                    testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
-                    testGame[startPos.x][startPos.y] = null;
-                    setValidPieceMoves(testGame);
+                    if(startPos.equals(new Pair(4, 7)) && endPos.equals(new Pair(2, 7))){ //White left castle
+                        testGame[startPos.x][startPos.y].updatePosition(endPos);
+                        testGame[0][7].updatePosition(new Pair(3, 7));
+                        testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                        testGame[3][7] = testGame[0][7];
+                        testGame[startPos.x][startPos.y] = null;
+                        testGame[0][7] = null;
+                        setValidPieceMoves(testGame);
+                    } else if(startPos.equals(new Pair(4, 7)) && endPos.equals(new Pair(6, 7))) { //White right castle
+                        testGame[startPos.x][startPos.y].updatePosition(endPos);
+                        testGame[7][7].updatePosition(new Pair(5, 7));
+                        testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                        testGame[5][7] = testGame[7][7];
+                        testGame[startPos.x][startPos.y] = null;
+                        testGame[7][7] = null;
+                        setValidPieceMoves(testGame);
+                    } else if(startPos.equals(new Pair(4, 0)) && endPos.equals(new Pair(2, 0))){ //Black left castle
+                        testGame[startPos.x][startPos.y].updatePosition(endPos);
+                        testGame[0][0].updatePosition(new Pair(3, 0));
+                        testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                        testGame[3][0] = testGame[0][0];
+                        testGame[startPos.x][startPos.y] = null;
+                        testGame[0][0] = null;
+                        setValidPieceMoves(testGame);
+                    } else if(startPos.equals(new Pair(4, 0)) && endPos.equals(new Pair(6, 0))){ //Black right castle
+                        testGame[startPos.x][startPos.y].updatePosition(endPos);
+                        testGame[7][0].updatePosition(new Pair(5, 0));
+                        testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                        testGame[5][0] = testGame[7][0];
+                        testGame[startPos.x][startPos.y] = null;
+                        testGame[7][0] = null;
+                        setValidPieceMoves(testGame);
+                    } else {
+                        testGame[startPos.x][startPos.y].updatePosition(endPos);
+                        testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
+                        testGame[startPos.x][startPos.y] = null;
+                        setValidPieceMoves(testGame);
+                    }
                 }
 
                 pawnTwoMoveReset(testGame);
@@ -218,6 +227,19 @@ public class Game {
                     System.out.println("Move Successful");
                     moveNumber++;
                     System.out.println("Check");
+                    if(game[startPos.x][startPos.y] instanceof King){
+                        King temp = (King)testGame[startPos.x][startPos.y];
+                        temp.moved = true;
+                        testGame[startPos.x][startPos.y] = temp;
+                        setValidPieceMoves(testGame);
+                    }
+
+                    if(game[startPos.x][startPos.y] instanceof Rook){
+                        Rook temp = (Rook)testGame[startPos.x][startPos.y];
+                        temp.moved = true;
+                        testGame[startPos.x][startPos.y] = temp;
+                        setValidPieceMoves(testGame);
+                    }
                 } else {
                     game = testGame;
                     if(isStalemate()) {
@@ -226,6 +248,19 @@ public class Game {
                     }
                     System.out.println("Move Successful");
                     moveNumber++;
+                    if(game[startPos.x][startPos.y] instanceof King){
+                        King temp = (King)testGame[startPos.x][startPos.y];
+                        temp.moved = true;
+                        testGame[startPos.x][startPos.y] = temp;
+                        setValidPieceMoves(testGame);
+                    }
+
+                    if(game[startPos.x][startPos.y] instanceof Rook){
+                        Rook temp = (Rook)testGame[startPos.x][startPos.y];
+                        temp.moved = true;
+                        testGame[startPos.x][startPos.y] = temp;
+                        setValidPieceMoves(testGame);
+                    }
                 }
             } else {
                 System.out.println("Invalid move from " + startPos + " to " + endPos);
@@ -287,6 +322,44 @@ public class Game {
             for (Piece piece : pieces) {
                 if(piece != null){
                     piece.setValidMoves(testGame);
+                }
+            }
+        }
+        if(game[4][7] != null && game[4][7] instanceof King){ //White left Castle
+            King k = (King) game[4][7];
+            if(!(k.moved)){
+                if(game[0][7] instanceof Rook && game[1][7] == null && game[2][7] == null && game[3][7] == null && (!attacked(new Pair(1,7))) && (!attacked(new Pair(2,7))) && (!attacked(new Pair(3,7)))){
+                    Rook r = (Rook) game[0][7];
+                    if(!(r.moved)){
+                        k.validMoves.add(new Pair(2, 7));
+                        //r.validMoves.add(new Pair(3,7)); Shouldn't be in Rook?
+                    }
+                }
+                if(game[7][7] instanceof Rook && game[5][7] == null && game[6][7] == null && (!attacked(new Pair(5,7))) && (!attacked(new Pair(6,7)))){ //White Right Castle
+                    Rook r1 = (Rook) game[7][7];
+                    if(!(r1.moved)){
+                        k.validMoves.add(new Pair(6, 7));
+                        //r1.validMoves.add(new Pair(5,7)); Shouldn't be in Rook?
+                    }
+                }
+            }
+        }
+        if(game[4][0] != null && game[4][0] instanceof King){ //Black left Castle
+            King k = (King) game[4][0];
+            if(!(k.moved)){
+                if(game[0][0] instanceof Rook && game[1][0] == null && game[2][0] == null && game[3][0] == null && (!attacked(new Pair(1,0))) && (!attacked(new Pair(2,0))) && (!attacked(new Pair(3,0)))){
+                    Rook r = (Rook) game[0][0];
+                    if(!(r.moved)){
+                        k.validMoves.add(new Pair(2, 0));
+                        r.validMoves.add(new Pair(3,0));
+                    }
+                }
+                if(game[7][0] instanceof Rook && game[5][0] == null && game[6][0] == null && (!attacked(new Pair(5,0))) && (!attacked(new Pair(6,0)))){ //Black Right Castle
+                    Rook r1 = (Rook) game[7][0];
+                    if(!(r1.moved)){
+                        k.validMoves.add(new Pair(6, 0));
+                        r1.validMoves.add(new Pair(5,0));
+                    }
                 }
             }
         }
@@ -380,11 +453,29 @@ public class Game {
                         game[i][j].validMoves.toArray(valid);
 
                         for(Pair pair : valid){
+                            if(game[i][j] instanceof King){ //Can't get out of check using castling
+                                if(i == 4 && j == 7){
+                                    if(!(pair.equals(new Pair(2, 7)) || pair.equals(new Pair(6, 7)))){
+                                        testGame[i][j].updatePosition(pair);
+                                        testGame[pair.x][pair.y] = testGame[i][j];
+                                        testGame[i][j] = null;
+                                        setValidPieceMoves(testGame);
+                                    }
+                                } else if (i == 4 && j == 0) {
+                                    if (!(pair.equals(new Pair(2, 0)) || pair.equals(new Pair(6, 0)))) {
+                                        testGame[i][j].updatePosition(pair);
+                                        testGame[pair.x][pair.y] = testGame[i][j];
+                                        testGame[i][j] = null;
+                                        setValidPieceMoves(testGame);
+                                    }
+                                }
+                            } else {
+                                testGame[i][j].updatePosition(pair);
+                                testGame[pair.x][pair.y] = testGame[i][j];
+                                testGame[i][j] = null;
+                                setValidPieceMoves(testGame);
+                            }
 
-                            testGame[i][j].updatePosition(pair);
-                            testGame[pair.x][pair.y] = testGame[i][j];
-                            testGame[i][j] = null;
-                            setValidPieceMoves(testGame);
 
                             if (!(isOpponentCheck(testGame))) {
                                 return false;
@@ -396,6 +487,25 @@ public class Game {
             }
         }
         return true;
+    }
+
+    public boolean attacked(Pair p){
+        for(int i = 0; i < game.length; i++) {
+            for (int j = 0; j < game[i].length; j++) {
+                if(game[i][j] != null) {
+                    if (moveNumber % 2 != game[i][j].color) { //Finds all opponent's pieces
+                        Pair[] valid = new Pair[game[i][j].validMoves.size()];
+                        game[i][j].validMoves.toArray(valid);
+                        for(Pair pair : valid){
+                            if (pair.equals(p)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isCheck(Piece[][] testGame){
@@ -440,43 +550,6 @@ public class Game {
             }
         }
         return false;
-    }
-
-    public boolean castle(Pair king, Pair endPos){
-        Piece[][] testGame = dupeBoard(game);
-
-        if(king.y != endPos.y){
-            return false;
-        }
-
-        if((testGame[king.x][king.y] instanceof King) && (testGame[7][king.y] instanceof Rook)){
-            King kingTemp = (King) testGame[king.x][king.y];
-            Rook rookTemp = (Rook) testGame[7][king.y];
-            if(kingTemp.moved || rookTemp.moved){
-                return false;
-            }
-
-            if(king.x != 4 && !(king.y == 0|| king.y == 7)){
-                return false;
-            }
-
-            if(king.x != 7 && !(king.y == 0|| king.y == 7)){
-                return false;
-            }
-
-            if(endPos.x != 6){
-                return false;
-            }
-
-            if(!(testGame[king.x+1][king.y] == null && testGame[king.x+2][king.y] == null)){
-                return false;
-            }
-        } else {
-            return false;
-        }
-        game[king.x][king.y].validMoves.add(new Pair(endPos.x, endPos.y));
-        game[7][king.y].validMoves.add(new Pair(endPos.x-1, endPos.y));
-        return true;
     }
 
     public boolean pawnCapture(Pair start, Pair end) {
