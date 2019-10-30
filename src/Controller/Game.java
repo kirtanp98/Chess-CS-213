@@ -159,7 +159,9 @@ public class Game {
         }
 
         move(startPos, endPos);
-        System.out.println(this);
+        if(!gameFinished) {
+            System.out.println(this);
+        }
         System.out.println();
     }
 
@@ -263,9 +265,11 @@ public class Game {
                         if(moveNumber % 2 == 0){
                             System.out.println("White Wins");
                             gameFinished = true;
+                            return;
                         } else {
                             System.out.println("Black Wins");
                             gameFinished = true;
+                            return;
                         }
                     }
                     //System.out.println("Move Successful");
@@ -289,6 +293,7 @@ public class Game {
                     if(isStalemate()) {
                         System.out.println("In Stalemate");
                         gameFinished = true;
+                        return;
                     }
                     //System.out.println("Move Successful");
                     moveNumber++;
@@ -358,9 +363,11 @@ public class Game {
                 if (moveNumber % 2 == 0) {
                     System.out.println("White Wins");
                     gameFinished = true;
+                    return;
                 } else {
                     System.out.println("Black Wins");
                     gameFinished = true;
+                    return;
                 }
             }
             System.out.println("Check");
