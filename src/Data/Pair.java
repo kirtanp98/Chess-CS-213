@@ -17,4 +17,13 @@ public class Pair {
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof Pair)) {
+            return false;
+        }
+        Pair p = (Pair) other;
+        return (this.x == p.x && this.y == p.y);
+    }
 }

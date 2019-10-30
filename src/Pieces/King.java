@@ -4,6 +4,8 @@ import Data.Pair;
 
 public class King extends Piece {
 
+    public boolean moved = false;
+
     public King(Pair position, int color) {
         super(position, color);
     }
@@ -15,6 +17,8 @@ public class King extends Piece {
 
     @Override
     public void setValidMoves(Piece[][] testGame) {
+
+        validMoves.clear();
 
         checkEndSpace(testGame, new Pair(position.x - 1, position.y));
         checkEndSpace(testGame, new Pair(position.x - 1, position.y - 1));

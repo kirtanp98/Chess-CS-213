@@ -4,6 +4,8 @@ import Data.Pair;
 
 public class Rook extends Piece {
 
+    public boolean moved = false;
+
     public Rook(Pair position, int color) {
         super(position, color);
     }
@@ -16,6 +18,8 @@ public class Rook extends Piece {
     @Override
     public void setValidMoves(Piece[][] testGame) {
 
+        validMoves.clear();
+
         int x = this.position.x;
         int y = this.position.y;
         while(x > 0){
@@ -25,15 +29,13 @@ public class Rook extends Piece {
                 validMoves.add(newPos);
             } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
-                x = this.position.x;
-                y = this.position.y;
                 break;
             } else { //Trying to capture your own piece
-                x = this.position.x;
-                y = this.position.y;
                 break;
             }
         }
+        x = this.position.x;
+        y = this.position.y;
         while(x < 7){
             x++;
             Pair newPos = new Pair(x, y);
@@ -41,15 +43,13 @@ public class Rook extends Piece {
                 validMoves.add(newPos);
             } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
-                x = this.position.x;
-                y = this.position.y;
                 break;
             } else {
-                x = this.position.x;
-                y = this.position.y;
                 break;
             }
         }
+        x = this.position.x;
+        y = this.position.y;
         while(y < 7){
             y++;
             Pair newPos = new Pair(x, y);
@@ -57,15 +57,13 @@ public class Rook extends Piece {
                 validMoves.add(newPos);
             } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
-                x = this.position.x;
-                y = this.position.y;
                 break;
             } else {
-                x = this.position.x;
-                y = this.position.y;
                 break;
             }
         }
+        x = this.position.x;
+        y = this.position.y;
         while(y > 0){
             y--;
             Pair newPos = new Pair(x, y);
@@ -73,15 +71,13 @@ public class Rook extends Piece {
                 validMoves.add(newPos);
             } else if(this.color != testGame[x][y].color){ //(White capture black or Black capture white)
                 validMoves.add(newPos);
-                x = this.position.x;
-                y = this.position.y;
                 break;
             } else {
-                x = this.position.x;
-                y = this.position.y;
                 break;
             }
         }
+        x = this.position.x;
+        y = this.position.y;
     }
 
     @Override
