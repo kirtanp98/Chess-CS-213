@@ -407,6 +407,7 @@ public class Game {
                 }
             }
         }
+        setValidPieceMoves(newGame);
         return newGame;
     }
 
@@ -468,6 +469,11 @@ public class Game {
                                         testGame[i][j] = null;
                                         setValidPieceMoves(testGame);
                                     }
+                                } else {
+                                    testGame[i][j].updatePosition(pair);
+                                    testGame[pair.x][pair.y] = testGame[i][j];
+                                    testGame[i][j] = null;
+                                    setValidPieceMoves(testGame);
                                 }
                             } else {
                                 testGame[i][j].updatePosition(pair);
