@@ -4,6 +4,8 @@ import Data.Pair;
 
 public class King extends Piece {
 
+    public boolean moved = false;
+
     public King(Pair position, int color) {
         super(position, color);
     }

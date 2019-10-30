@@ -137,6 +137,13 @@ public class Game {
 
             if(game[startPos.x][startPos.y].validMoves.contains(endPos)){ //Piece at atartX,startY can move to endX, endY
 
+                if(game[startPos.x][startPos.y] instanceof King){
+                    King temp = (King)testGame[startPos.x][startPos.y];
+                    temp.moved = true;
+                    testGame[startPos.x][startPos.y] = temp;
+                    setValidPieceMoves(testGame);
+                }
+
                 if(castle){
                     testGame[startPos.x][startPos.y].updatePosition(endPos);
                     testGame[endPos.x][endPos.y] = testGame[startPos.x][startPos.y];
@@ -299,6 +306,7 @@ public class Game {
                 } else if(testGame[i][j] instanceof King){
                     King p = (King) testGame[i][j];
                     King newP = new King(new Pair(p.position.x, p.position.y), p.color);
+                    newP.moved = p.moved;
                     newP.validMoves = new ArrayList<>(p.validMoves);
                     newGame[i][j] = newP;
                 }
@@ -415,12 +423,25 @@ public class Game {
     public boolean castle(Pair king, Pair endPos){
         Piece[][] testGame = dupeBoard(game);
 
+        if(king.y != endPos.y){
+            return false;
+        }
+
         if((testGame[king.x][king.y] instanceof King) && (testGame[7][king.y] instanceof Rook)){
+            King temp = (King) testGame[king.x][king.y];
+            if(temp.moved){
+                return false;
+            }
+
             if(king.x != 4 && !(king.y == 0|| king.y == 7)){
                 return false;
             }
 
             if(king.x != 7 && !(king.y == 0|| king.y == 7)){
+                return false;
+            }
+
+            if(endPos.x != 6){
                 return false;
             }
 
@@ -490,7 +511,7 @@ public class Game {
             if(testGame[i][5] instanceof Pawn){
                 Pawn temp = (Pawn) testGame[i][5];
                 temp.twoMove = false;
-                testGame[i][2] = temp;
+                testGame[i][5] = temp;
             }
         }
         setValidPieceMoves(testGame);
