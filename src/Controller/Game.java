@@ -116,6 +116,7 @@ public class Game {
             }
             else if (moves[2].length() == 1){
                 promotion(startPos, endPos, moves[2]);
+                System.out.println(this);
                 return;
             }
         }
@@ -139,6 +140,13 @@ public class Game {
 
                 if(game[startPos.x][startPos.y] instanceof King){
                     King temp = (King)testGame[startPos.x][startPos.y];
+                    temp.moved = true;
+                    testGame[startPos.x][startPos.y] = temp;
+                    setValidPieceMoves(testGame);
+                }
+
+                if(game[startPos.x][startPos.y] instanceof Rook){
+                    Rook temp = (Rook)testGame[startPos.x][startPos.y];
                     temp.moved = true;
                     testGame[startPos.x][startPos.y] = temp;
                     setValidPieceMoves(testGame);
@@ -243,9 +251,9 @@ public class Game {
 
         testGame[endPos.x][endPos.y] = promotionReplacement;
         setValidPieceMoves(testGame);
-
+        game = testGame;
         if(isOpponentCheck(testGame)) {
-            game = testGame;
+
             if (isCheckmate()) {
                 if (moveNumber % 2 == 0) {
                     System.out.println("White Wins");
@@ -291,6 +299,7 @@ public class Game {
                 } else if(testGame[i][j] instanceof Rook){
                     Rook p = (Rook) testGame[i][j];
                     Rook newP = new Rook(new Pair(p.position.x, p.position.y), p.color);
+                    newP.moved = p.moved;
                     newP.validMoves = new ArrayList<>(p.validMoves);
                     newGame[i][j] = newP;
                 } else if(testGame[i][j] instanceof Bishop){
@@ -428,8 +437,9 @@ public class Game {
         }
 
         if((testGame[king.x][king.y] instanceof King) && (testGame[7][king.y] instanceof Rook)){
-            King temp = (King) testGame[king.x][king.y];
-            if(temp.moved){
+            King kingTemp = (King) testGame[king.x][king.y];
+            Rook rookTemp = (Rook) testGame[7][king.y];
+            if(kingTemp.moved || rookTemp.moved){
                 return false;
             }
 

@@ -4,6 +4,8 @@ import Data.Pair;
 
 public class Rook extends Piece {
 
+    public boolean moved = false;
+
     public Rook(Pair position, int color) {
         super(position, color);
     }
