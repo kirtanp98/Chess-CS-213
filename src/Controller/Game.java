@@ -11,6 +11,7 @@ public class Game {
     public int moveNumber = 0;
     public boolean gameFinished = false;
     private boolean drawCondition = false;
+    private boolean promotionBoolean = false;
 
     public Game(){
 
@@ -195,6 +196,11 @@ public class Game {
                         setValidPieceMoves(testGame);
                     }
                 }
+                //default promotion
+                if(!promotionBoolean && (testGame[endPos.x][endPos.y] instanceof Pawn) && (((testGame[endPos.x][endPos.y].color == 0) && (endPos.y == 0)) || (testGame[endPos.x][endPos.y].color == 1) && (endPos.y == 7))){ //Promotion
+                    testGame[endPos.x][endPos.y] = new Queen(new Pair(endPos.x, endPos.y), testGame[endPos.x][endPos.y].color);
+                    setValidPieceMoves(testGame);
+                }
 
                 if(isCheck(testGame)){ //Putting yourself in check
                     System.out.println("Putting yourself in check if you move from " + startPos + " to " + endPos);
@@ -228,9 +234,16 @@ public class Game {
     }
 
     public void promotion(Pair startPos, Pair endPos, String promotion){
+        promotionBoolean = true;
         move(startPos, endPos);
+        promotionBoolean = false;
         Piece current = game[endPos.x][endPos.y];
         Piece promotionReplacement = null;
+
+        if(!(game[endPos.x][endPos.y] instanceof Pawn)){
+            System.out.println("Can not promote");
+            return;
+        }
 
         if(promotion.equals("R")){
             promotionReplacement = new Rook(endPos, current.color);
