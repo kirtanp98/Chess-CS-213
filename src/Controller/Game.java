@@ -569,10 +569,7 @@ public class Game {
 
         if(testGame[start.x][start.y].color == 0){
             if(end.y == start.y-1 && (end.x == start.x+1 || end.x == start.x-1)){
-                if(testGame[end.x][end.y]!= null){
-                    game[start.x][start.y].validMoves.add(end);
-                    return true;
-                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y+1] instanceof Pawn) && testGame[end.x][end.y+1].color == 1) {
+                 if(testGame[end.x][end.y] == null && (testGame[end.x][end.y+1] instanceof Pawn) && testGame[end.x][end.y+1].color == 1) {
                     Pawn temp = (Pawn) testGame[end.x][end.y+1];
                     if(temp.twoMove){
                         game[start.x][start.y].validMoves.add(end);
@@ -585,10 +582,7 @@ public class Game {
 
         }else{
             if(end.y == start.y+1 && (end.x == start.x+1 || end.x == start.x-1)){
-                if(testGame[end.x][end.y]!= null){
-                    game[start.x][start.y].validMoves.add(end);
-                    return true;
-                }else if(testGame[end.x][end.y] == null && (testGame[end.x][end.y-1] instanceof Pawn) && testGame[end.x][end.y-1].color == 0) {
+                if(testGame[end.x][end.y] == null && (testGame[end.x][end.y-1] instanceof Pawn) && testGame[end.x][end.y-1].color == 0) {
                     Pawn temp = (Pawn) testGame[end.x][end.y-1];
                     if(temp.twoMove){
                         game[start.x][start.y].validMoves.add(end);
@@ -605,15 +599,15 @@ public class Game {
 
     public void pawnTwoMoveReset(Piece[][] testGame){
         for(int i = 0; i < testGame.length; i++){
-            if(testGame[i][2] instanceof Pawn){
-                Pawn temp = (Pawn) testGame[i][2];
+            if(testGame[i][3] instanceof Pawn){
+                Pawn temp = (Pawn) testGame[i][3];
                 temp.twoMove = false;
-                testGame[i][2] = temp;
+                testGame[i][3] = temp;
             }
-            if(testGame[i][5] instanceof Pawn){
-                Pawn temp = (Pawn) testGame[i][5];
+            if(testGame[i][4] instanceof Pawn){
+                Pawn temp = (Pawn) testGame[i][4];
                 temp.twoMove = false;
-                testGame[i][5] = temp;
+                testGame[i][4] = temp;
             }
         }
         setValidPieceMoves(testGame);
