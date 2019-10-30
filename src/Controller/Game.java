@@ -6,13 +6,43 @@ import Pieces.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * @author Zain Ul-Abdin
+ * @author Kirtan Patel
+ */
+
+/**
+ * The main game class, where all the board is set up and the game logic gets applied.
+ */
 public class Game {
+    /**
+     * The game variable is the 8 by 8 board where Piece objects occupies it.
+     */
     public Piece[][] game = new Piece[8][8];// [x][y] x goes to the right and y goes down
+
+    /**
+     * The number of moves that passed in the game.
+     */
     public int moveNumber = 0;
+
+    /**
+     * Boolean that checks if the game has finished.
+     */
     public boolean gameFinished = false;
+
+    /**
+     * Boolean that checks if the game is in a draw.
+     */
     private boolean drawCondition = false;
+
+    /**
+     * Boolean that checks if a piece is in for a promotion.
+     */
     private boolean promotionBoolean = false;
 
+    /**
+     * Constructor of the Game class, where the board gets set up with the starting pieces and their position.
+     */
     public Game(){
 
         for(int i = 0; i < game.length; i++) {
@@ -63,7 +93,13 @@ public class Game {
 
     }
 
-    public void moveStringConverter(String move){ //promotion is not taken in to consideration yet
+    /**
+     * Method that converts the input string to the correct format that the game accepts.
+     * After converting the string, the method inputs the move in to the moves method.
+     *
+     * @param move Accepts the input string.
+     */
+    public void moveStringConverter(String move){
         String moves[] = move.split(" ");
 
         if (moves.length < 1 || moves.length > 3){
@@ -127,6 +163,13 @@ public class Game {
         System.out.println();
     }
 
+    /**
+     * The method where most of the game logic is located.
+     * Checks if the move a piece is possible and moves it.
+     *
+     * @param startPos The starting position.
+     * @param endPos The ending position.
+     */
     public void move(Pair startPos, Pair endPos){
         //Create a new test Board to check for invalid moves so that you don't mess with the real board while checking
         Piece[][] testGame = dupeBoard(game);
@@ -270,6 +313,13 @@ public class Game {
         }
     }
 
+    /**
+     * Method that handles the promotion of a pawn.
+     *
+     * @param startPos The starting position.
+     * @param endPos The ending position.
+     * @param promotion The string containing the piece that the user wants to promote to.
+     */
     public void promotion(Pair startPos, Pair endPos, String promotion){
         promotionBoolean = true;
         move(startPos, endPos);
@@ -319,6 +369,12 @@ public class Game {
 
     }
 
+    /**
+     * After pieces move, their validMoves arraylist need to updated.
+     * This method updates the validMoves arraylist of all pieces if called.
+     *
+     * @param testGame The game board.
+     */
     public void setValidPieceMoves(Piece[][] testGame){
         for (Piece[] pieces : testGame) {
             for (Piece piece : pieces) {
@@ -367,6 +423,12 @@ public class Game {
         }
     }
 
+    /**
+     * This method duplicates the gameboard.
+     *
+     * @param testGame The game board.
+     * @return Piece[][] The duplicated game board.
+     */
     public Piece[][] dupeBoard(Piece[][] testGame){
         Piece[][] newGame = new Piece[8][8];
         for(int i = 0; i < testGame.length; i++) {
@@ -413,6 +475,11 @@ public class Game {
         return newGame;
     }
 
+    /**
+     * This method checks if there is a stalemate and returns a boolean.
+     *
+     * @return boolean
+     */
     public boolean isStalemate(){
         Piece[][] testGame = dupeBoard(game);
         if(isCheck(testGame)){
@@ -446,6 +513,11 @@ public class Game {
         return true;
     }
 
+    /**
+     * This method checks if there is a checkmate and returns a boolean.
+     *
+     * @return boolean
+     */
     public boolean isCheckmate(){
         Piece[][] testGame = dupeBoard(game);
         for(int i = 0; i < game.length; i++) {
@@ -497,6 +569,13 @@ public class Game {
         return true;
     }
 
+    /**
+     * This methods check if the king is under attack or will be in check.
+     * This is a helper method to help with castling.
+     *
+     * @param p Takes in a pair object.
+     * @return boolean.
+     */
     public boolean attacked(Pair p){
         for(int i = 0; i < game.length; i++) {
             for (int j = 0; j < game[i].length; j++) {
@@ -516,6 +595,12 @@ public class Game {
         return false;
     }
 
+    /**
+     * This method checks if there is a check happening with the current player.
+     *
+     * @param testGame Takes in the board.
+     * @return boolean
+     */
     public boolean isCheck(Piece[][] testGame){
         Pair allyKingPos = null;
         for(int i = 0; i < testGame.length; i++) {
@@ -538,6 +623,12 @@ public class Game {
         return false;
     }
 
+    /**
+     * This method checks if there is a check happening with the opponent.
+     *
+     * @param testGame Takes in the board.
+     * @return boolean
+     */
     public boolean isOpponentCheck(Piece[][] testGame){
         Pair opponentKingPos = null;
         for(int i = 0; i < testGame.length; i++) {
@@ -560,6 +651,13 @@ public class Game {
         return false;
     }
 
+    /**
+     * This method checks if an en passant can happen.
+     *
+     * @param start Starting position, takes in the pair object.
+     * @param end End position, takes in the pair object.
+     * @return boolean
+     */
     public boolean pawnCapture(Pair start, Pair end) {
         Piece[][] testGame = dupeBoard(game);
         if(testGame[start.x][start.y] == null){
@@ -599,6 +697,11 @@ public class Game {
         return false;
     }
 
+    /**
+     * This method resets the Pawn's twoMove variable to false, which is used to figure out if en passant is possible.
+     *
+     * @param testGame Takes in the board.
+     */
     public void pawnTwoMoveReset(Piece[][] testGame){
         for(int i = 0; i < testGame.length; i++){
             if(testGame[i][3] instanceof Pawn){
@@ -615,6 +718,13 @@ public class Game {
         setValidPieceMoves(testGame);
     }
 
+    /**
+     * This method converts characters into an integer.
+     * This helps with knowing where to move the piece in the 2d array board.
+     *
+     * @param c Character
+     * @return Integer
+     */
     public int letterToInt(char c){
         int number = -1;
 
@@ -650,7 +760,12 @@ public class Game {
         return number;
     }
 
-
+    /**
+     * Overrides toString() method in the object class.
+     * Return a String that represents the game board.
+     *
+     * @return String
+     */
     public String toString(){
         String board = "";
         int row = 8;

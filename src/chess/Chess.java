@@ -13,6 +13,10 @@ import java.util.Scanner;
  * @author Kirtan Patel
  */
 public class Chess {
+    /**
+     * The main method where the chess game starts
+     * @param args String args
+     */
 
     public static void main(String[] args) {
         Game newGame = new Game();
