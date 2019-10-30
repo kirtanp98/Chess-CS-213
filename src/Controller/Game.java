@@ -203,6 +203,10 @@ public class Game {
                     System.out.println("Check");
                 } else {
                     game = testGame;
+                    if(isStalemate()) {
+                        System.out.println("In Stalemate");
+                        gameFinished = true;
+                    }
                     System.out.println("Move Successful");
                     moveNumber++;
                 }
@@ -308,7 +312,36 @@ public class Game {
     }
 
     public boolean isStalemate(){
-        return false;
+        Piece[][] testGame = dupeBoard(game);
+        if(isCheck(testGame)){
+            return false;
+        }
+
+        for(int i = 0; i < game.length; i++) {
+            for (int j = 0; j < game[i].length; j++) {
+                if (game[i][j] != null) {
+                    if (moveNumber % 2 != game[i][j].color) {
+                        Pair[] valid = new Pair[game[i][j].validMoves.size()];
+                        game[i][j].validMoves.toArray(valid);
+
+                        for(Pair pair : valid){
+                            testGame[i][j].updatePosition(pair);
+                            testGame[pair.x][pair.y] = testGame[i][j];
+                            testGame[i][j] = null;
+                            setValidPieceMoves(testGame);
+
+                            if (!isOpponentCheck(testGame)) {
+                                return false;
+                            }
+
+                            testGame = dupeBoard(game);
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public boolean isCheckmate(){
