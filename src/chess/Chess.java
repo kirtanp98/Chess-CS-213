@@ -12,6 +12,12 @@ import java.util.Scanner;
  * @author Zain Ul-Abdin
  * @author Kirtan Patel
  */
+
+/**
+ * The chess class handles the inputs and creation of the game.
+ * When the main method is called, a new chess game is created. The game will keep running until the game ends.
+ */
+
 public class Chess {
     /**
      * The main method where the chess game starts
